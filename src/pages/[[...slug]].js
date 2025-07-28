@@ -52,15 +52,15 @@ const Page = ({
     twitterTitle,
     twitterDescription,
     ogDescription;
-  if (pageData && !pageData.error) {
-    siteLanguage = pageData.data.i18n[0].twoLetterIsoCode;
+  if (pageData && !pageData.error && pageData.data && pageData.data.page) {
+    siteLanguage = pageData.data.i18n?.[0]?.twoLetterIsoCode;
     pageTitle = pageData.data.page.title;
     generalMetaDescription =
-      pageData.data.page.constants.ns_seo.seo_meta_description.value;
+      pageData.data.page.constants?.ns_seo?.seo_meta_description?.value;
     generalMetaKeywords =
-      pageData.data.page.constants.ns_seo.seo_meta_keywords.value;
+      pageData.data.page.constants?.ns_seo?.seo_meta_keywords?.value;
     ogImage = pageData.data?.meta?.ogImage?.publicUrl;
-    twitterImage = pageData.data?.meta.twitterImage?.publicUrl;
+    twitterImage = pageData.data?.meta?.twitterImage?.publicUrl;
     twitterTitle = pageData.data?.meta?.twitterTitle;
     twitterDescription = pageData?.data?.meta?.twitterDescription;
     ogDescription = pageData.data?.meta?.ogDescription;
@@ -158,6 +158,8 @@ const Page = ({
 
   useEffect(() => {
     if (pageData && pageData.error) return;
+    if (!pageData?.data?.page?.constants) return;
+    
     const ns_seo = pageData.data.page.constants.ns_seo;
     const ns_basetheme = pageData.data.page.constants.ns_basetheme;
     let spreadSocialMedia;
@@ -169,10 +171,14 @@ const Page = ({
         twitter: ns_seo.seo_twitter_link,
       };
     }
-    handleCopyright(ns_basetheme.copyright);
-    handleSocialMedia({
-      ...spreadSocialMedia,
-    });
+    if (ns_basetheme?.copyright) {
+      handleCopyright(ns_basetheme.copyright);
+    }
+    if (spreadSocialMedia) {
+      handleSocialMedia({
+        ...spreadSocialMedia,
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -197,13 +203,15 @@ const Page = ({
   }, [pageData]);
 
   useEffect(() => {
-    setEnMenuData(siteEnData);
-    setDeMenuData(siteDeData);
-    setUsMenuData(siteUsData);
-    setItMenuData(siteItData);
-    setFrMenuData(siteFrData);
-    setPlMenuData(sitePlData);
-    handleMenuItems(pageMenuItems);
+    if (pageMenuItems) {
+      setEnMenuData(siteEnData);
+      setDeMenuData(siteDeData);
+      setUsMenuData(siteUsData);
+      setItMenuData(siteItData);
+      setFrMenuData(siteFrData);
+      setPlMenuData(sitePlData);
+      handleMenuItems(pageMenuItems);
+    }
   }, [pageMenuItems]);
 
   return (
@@ -294,11 +302,12 @@ const Page = ({
           </div>
         )}
 
-        {pageData && !pageData.error && (
+        {pageData && !pageData.error && pageData.data && pageData.data.page && (
           <main>
             {pageData &&
-            Object.values(pageData.data.content).length &&
             pageData.data &&
+            pageData.data.content &&
+            Object.values(pageData.data.content).length &&
             pageData.data.content.colPos0 ? (
               <ContentType pageContentProps={pageData.data.content.colPos0} />
             ) : (
@@ -369,16 +378,17 @@ export const getStaticProps = async (context) => {
   const itData = await getAPIData("it");
   const frData = await getAPIData("fr");
   const plData = await getAPIData("pl");
+  
   return {
     props: {
       pageData,
-      pageMenuItems: menuItems.data.page,
-      siteEnData: enData.data.page,
-      siteUsData: usData.data.page,
-      siteDeData: deData.data.page,
-      siteItData: itData.data.page,
-      siteFrData: frData.data.page,
-      sitePlData: plData.data.page,
+      pageMenuItems: menuItems?.data?.page || null,
+      siteEnData: enData?.data?.page || null,
+      siteUsData: usData?.data?.page || null,
+      siteDeData: deData?.data?.page || null,
+      siteItData: itData?.data?.page || null,
+      siteFrData: frData?.data?.page || null,
+      sitePlData: plData?.data?.page || null,
 
       // ...(await serverSideTranslations(context.locale['common'])),
     },

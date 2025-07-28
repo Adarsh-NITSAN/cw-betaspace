@@ -4,7 +4,6 @@ const { i18n } = require("./next-i18next.config");
 
 module.exports = withFonts(
   withOptimizedImages({
-    webpack5: false,
     i18n,
     reactStrictMode: true,
     async rewrites() {

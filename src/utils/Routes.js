@@ -3,6 +3,10 @@ import getAPIData from "./API";
 export const getRoute = ({ lang, langPages, defaultLocale }) => {
   let path;
 
+  if (!langPages || !Array.isArray(langPages)) {
+    return path;
+  }
+
   langPages.map((langPage) => {
     // if (langPage.hreflang === "en-US") return;
     if (lang === langPage.twoLetterIsoCode) {
@@ -18,6 +22,11 @@ export const getRoute = ({ lang, langPages, defaultLocale }) => {
 
 const getRoutes = (menuData, lang) => {
   var mainMenu = [];
+
+  // Check if menuData has the required structure
+  if (!menuData?.data?.page?.mainNavigation || !menuData?.data?.page?.subNavigation) {
+    return mainMenu;
+  }
 
   const mainNavMenu = menuData.data.page.mainNavigation.map((article) => {
     // const link =
@@ -129,8 +138,11 @@ const getRoutes = (menuData, lang) => {
 };
 
 const getNewsList = (newsData) => {
+  if (!newsData || !Array.isArray(newsData)) {
+    return null;
+  }
   const list = newsData.filter((comps) => comps.type === "news_pi1");
-  return list[0];
+  return list[0] || null;
 };
 
 export const Routes = async () => {
@@ -220,10 +232,10 @@ export const Routes = async () => {
     ...getPLRoutes,
   ];
 
-  if (newsData && newsData.data) {
-    var newsMenu = getNewsList(newsData.data.content.colPos0).content.data.list;
-    if (newsMenu) {
-      var news = newsMenu.map((article) => ({
+  if (newsData && newsData.data && newsData.data.content && newsData.data.content.colPos0) {
+    const newsList = getNewsList(newsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
@@ -233,11 +245,10 @@ export const Routes = async () => {
     }
   }
 
-  if (enNewsData && enNewsData.data) {
-    var newsMenu = getNewsList(enNewsData.data.content.colPos0).content.data
-      .list;
-    if (newsMenu) {
-      news = newsMenu.map((article) => ({
+  if (enNewsData && enNewsData.data && enNewsData.data.content && enNewsData.data.content.colPos0) {
+    const newsList = getNewsList(enNewsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
@@ -247,11 +258,10 @@ export const Routes = async () => {
     }
   }
 
-  if (usNewsData && usNewsData.data) {
-    var newsMenu = getNewsList(usNewsData.data.content.colPos0).content.data
-      .list;
-    if (newsMenu) {
-      news = newsMenu.map((article) => ({
+  if (usNewsData && usNewsData.data && usNewsData.data.content && usNewsData.data.content.colPos0) {
+    const newsList = getNewsList(usNewsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
@@ -261,11 +271,10 @@ export const Routes = async () => {
     }
   }
 
-  if (itNewsData && itNewsData.data) {
-    var newsMenu = getNewsList(itNewsData.data.content.colPos0).content.data
-      .list;
-    if (newsMenu) {
-      news = newsMenu.map((article) => ({
+  if (itNewsData && itNewsData.data && itNewsData.data.content && itNewsData.data.content.colPos0) {
+    const newsList = getNewsList(itNewsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
@@ -275,11 +284,10 @@ export const Routes = async () => {
     }
   }
 
-  if (frNewsData && frNewsData.data) {
-    var newsMenu = getNewsList(frNewsData.data.content.colPos0).content.data
-      .list;
-    if (newsMenu) {
-      news = newsMenu.map((article) => ({
+  if (frNewsData && frNewsData.data && frNewsData.data.content && frNewsData.data.content.colPos0) {
+    const newsList = getNewsList(frNewsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
@@ -289,11 +297,10 @@ export const Routes = async () => {
     }
   }
 
-  if (plNewsData && plNewsData.data) {
-    var newsMenu = getNewsList(plNewsData.data.content.colPos0).content.data
-      .list;
-    if (newsMenu) {
-      news = newsMenu.map((article) => ({
+  if (plNewsData && plNewsData.data && plNewsData.data.content && plNewsData.data.content.colPos0) {
+    const newsList = getNewsList(plNewsData.data.content.colPos0);
+    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+      var news = newsList.content.data.list.map((article) => ({
         params: {
           slug: ["news", article.pathSegment],
         },
