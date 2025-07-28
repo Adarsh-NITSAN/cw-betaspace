@@ -1,0 +1,52 @@
+{
+  "name": "cwbearing",
+  "description": "Kugellager von CW Bearing finden Sie überall, wo höchste Präzision und Qualität gefragt ist.",
+  "version": "1.0.0",
+  "author": "",
+  "private": true,
+  "proxy": "${NEXT_PUBLIC_API_URL}",
+  "scripts": {
+    "dev": "set NODE_OPTIONS=--openssl-legacy-provider && next dev",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && next build",
+    "start": "next start",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "@n8tb1t/use-scroll-position": "^2.0.3",
+    "animate.css": "^4.1.1",
+    "aos": "^3.0.0-beta.6",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.2.3",
+    "dompurify": "^3.0.9",
+    "formik": "^2.4.2",
+    "i18next": "^23.4.5",
+    "i18next-browser-languagedetector": "^7.1.0",
+    "i18next-resources-to-backend": "^1.1.4",
+    "js-file-download": "^0.4.12",
+    "next": "^13.4.7",
+    "next-fonts": "^1.2.0",
+    "next-i18next": "^14.0.0",
+    "polished": "^4.2.2",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
+    "react-dom": "^18.2.0",
+    "react-gtm-module": "^2.0.11",
+    "react-i18next": "^13.2.0",
+    "react-lazy-load-image-component": "^1.6.0",
+    "react-markdown": "^8.0.7",
+    "react-player": "^2.12.0",
+    "react-select": "^5.7.4",
+    "react-slick": "^0.29.0",
+    "rehype-raw": "^6.1.1",
+    "sass": "^1.63.6",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^6.0.4",
+    "styled-system": "^5.1.5",
+    "yup": "^0.32.9"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^2.1.4",
+    "imagemin-mozjpeg": "^9.0.0",
+    "next-optimized-images": "^2.6.1"
+  }
+}
