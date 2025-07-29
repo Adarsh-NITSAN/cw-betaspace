@@ -170,6 +170,7 @@
 
     .product-solutions-inner h3 {
       margin-bottom: 17px;
+      cursor: auto;
 
       @include media-breakpoint-up(lg) {
         margin-bottom: 40px;
@@ -178,10 +179,6 @@
       }
 
       border-bottom: 0;
-    }
-
-    .product-solutions-section .row {
-      margin: 0 -22px;
     }
   }
 

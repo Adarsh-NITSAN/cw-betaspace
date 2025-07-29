@@ -22,6 +22,10 @@
   }
 }
 
+.spinner-border.text-dark {
+  color: $brand-color-primary !important;
+}
+
 input [type="text"] {
   margin-left: 0;
   width: 100%;
@@ -548,6 +552,17 @@ input[type="checkbox"] {
       margin-top: 5px;
       font-size: 14px;
       line-height: 20px;
+      
+      .delete-file {
+        margin-left: 10px;
+        vertical-align: bottom;
+        
+        img {
+          width: 20px;
+          height: 20px;
+          object-fit: cover;
+        }
+      }
     }
   }
 }
@@ -666,5 +681,15 @@ input[type="checkbox"] {
 @include media-breakpoint-up(md) {
   textarea {
     height: 240px;
+  }
+}
+
+// Disabled button styles
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  
+  &:hover {
+    transform: none;
   }
 }

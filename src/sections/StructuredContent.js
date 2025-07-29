@@ -33,6 +33,7 @@ const renderImage = (content) => {
       {content &&
       content.gallery &&
       content.gallery.rows &&
+      content.gallery.rows["1"] &&
       content.gallery.rows["1"].columns &&
       content.gallery.rows["1"].columns["1"].publicUrl ? (
         <img

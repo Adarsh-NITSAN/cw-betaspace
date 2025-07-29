@@ -17,14 +17,16 @@ import SuccessModal from "../components/SuccessModal/SuccessModal";
 // import useTranslation from 'next-i18next';
 
 const Page = ({
-  pageData,
-  pageMenuItems,
-  siteEnData,
-  siteDeData,
-  siteUsData,
-  siteItData,
-  siteFrData,
-  sitePlData,
+  pageData = null,
+  pageMenuItems = null,
+  siteEnData = null,
+  siteDeData = null,
+  siteUsData = null,
+  siteItData = null,
+  siteFrData = null,
+  sitePlData = null,
+  preview = false,
+  previewData = null,
 }) => {
   const router = useRouter();
   const {
@@ -350,21 +352,25 @@ export const getStaticPaths = async (context) => {
 };
 
 export const getStaticProps = async (context) => {
+  const { preview = false, previewData } = context;
   const paramSlug = context.params.slug;
+  
+  // Process slug for API calls
+  let slug;
+  if (paramSlug && paramSlug.length > 2) {
+    slug = paramSlug.toString().replace(/,/g, "/");
+  } else if (paramSlug && paramSlug.length > 1) {
+    slug = paramSlug.toString().replace(",", "/");
+  } else if (!paramSlug) {
+    slug = "";
+  } else {
+    slug = paramSlug[0];
+  }
+  
   var newsData = await getAPIData("news/detail/" + paramSlug);
   if (!newsData.error) {
     var pageData = newsData;
   } else {
-    var slug;
-    if (paramSlug && paramSlug.length > 2) {
-      slug = paramSlug.toString().replace(/,/g, "/");
-    } else if (paramSlug && paramSlug.length > 1) {
-      slug = paramSlug.toString().replace(",", "/");
-    } else if (!paramSlug) {
-      slug = "";
-    } else {
-      slug = paramSlug[0];
-    }
     const url = !isGerman(context.locale) ? `${context.locale}/${slug}` : slug;
     var pageData = await getAPIData(url);
   }
@@ -381,7 +387,7 @@ export const getStaticProps = async (context) => {
   
   return {
     props: {
-      pageData,
+      pageData: pageData || null,
       pageMenuItems: menuItems?.data?.page || null,
       siteEnData: enData?.data?.page || null,
       siteUsData: usData?.data?.page || null,
@@ -389,6 +395,8 @@ export const getStaticProps = async (context) => {
       siteItData: itData?.data?.page || null,
       siteFrData: frData?.data?.page || null,
       sitePlData: plData?.data?.page || null,
+      preview,
+      previewData: previewData || null,
 
       // ...(await serverSideTranslations(context.locale['common'])),
     },

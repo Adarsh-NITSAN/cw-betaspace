@@ -125,6 +125,27 @@ const StepThree = ({
     });
   };
 
+  const handleDeleteFile = (fileName) => {
+    setInputs({
+      ...inputs,
+      [fileName]: { ...inputs[fileName], value: { name: "" } },
+    });
+    
+    // Reset the file input ref to allow re-uploading the same file
+    if (fileName === "specificationDoc") {
+      if (specificationDoc.current) {
+        specificationDoc.current.value = "";
+      }
+      if (specificationDocTwo.current) {
+        specificationDocTwo.current.value = "";
+      }
+    } else if (fileName === "drawingDoc") {
+      if (drawingDoc.current) {
+        drawingDoc.current.value = "";
+      }
+    }
+  };
+
   const renderVariantOne = () => {
     if (!stepThreeInput || !Object.values(stepThreeInput).length) {
       return <div>{t("data.loading")}</div>;
@@ -378,6 +399,16 @@ const StepThree = ({
                           />
                         </span>
                         {inputs.specificationDoc.value.name}
+                        <span 
+                          className="img-in delete-file" 
+                          onClick={() => handleDeleteFile("specificationDoc")}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <img
+                            src="/images/png/delete-file.svg"
+                            alt={t("data.altDeleteText")}
+                          />
+                        </span>
                       </div>
                     )}
                   </div>
@@ -654,6 +685,16 @@ const StepThree = ({
                           />
                         </span>
                         {inputs.specificationDoc.value.name}
+                        <span 
+                          className="img-in delete-file" 
+                          onClick={() => handleDeleteFile("specificationDoc")}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <img
+                            src="/images/png/delete-file.svg"
+                            alt={t("data.altDeleteText")}
+                          />
+                        </span>
                       </div>
                     )}
                   </div>
@@ -690,6 +731,16 @@ const StepThree = ({
                           />
                         </span>
                         {inputs.drawingDoc.value.name}
+                        <span 
+                          className="img-in delete-file" 
+                          onClick={() => handleDeleteFile("drawingDoc")}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <img
+                            src="/images/png/delete-file.svg"
+                            alt={t("data.altDeleteText")}
+                          />
+                        </span>
                       </div>
                     )}
                   </div>

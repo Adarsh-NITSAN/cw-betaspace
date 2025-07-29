@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Row, Col, Dropdown } from "react-bootstrap";
+import { Row, Col, Dropdown, Spinner } from "react-bootstrap";
 import { validateText } from "../utils/validation";
 import GlobalContext from "../context/GlobalContext";
 // import { useTranslation } from "../pages/i18n/client";
@@ -373,12 +373,13 @@ const RenderInputs = ({
 
 const Form = ({ id, data }) => {
   const router = useRouter();
+  const { t } = useTranslation(router.locale);
   const fileupload = useRef(null);
   const fileuploadTwo = useRef(null);
   const [values, setValues] = useState({});
-  const [confirmationMessage, setConfirmationMessage] = useState("");
   const [redirectLink, setRedirectLink] = useState("");
-  const { handleSuccessModal } = useContext(GlobalContext);
+  const [emailConfig, setEmailConfig] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     let tempValues = {};
@@ -443,9 +444,11 @@ const Form = ({ id, data }) => {
       data.form_additional.finishers.length
     ) {
       data.form_additional.finishers.map((finisher) => {
-        if (finisher.identifier === "Confirmation") {
-          setConfirmationMessage(finisher.options.message);
+        // Handle EmailToReceiver finisher (new structure)
+        if (finisher.identifier === "EmailToReceiver") {
+          setEmailConfig(finisher.options);
         }
+        // Handle Redirect finisher (updated structure)
         if (finisher.identifier === "Redirect") {
           setRedirectLink(finisher.link);
         }
@@ -486,19 +489,44 @@ const Form = ({ id, data }) => {
       });
       setValues({ ...tempValues });
     } else {
+      setIsSubmitting(true);
       const formData = new FormData();
 
+      // Check if we have any values to send
+      const hasValues = Object.values(values).some(val => val && val.value !== undefined && val.value !== null && val.value !== "");
+      if (!hasValues) {
+        console.error("No form values to send");
+        alert("Please fill in at least one field before submitting.");
+        setIsSubmitting(false);
+        return;
+      }
+
       Object.entries(values).map((inValue) => {
-        formData.append(inValue[0], inValue[1].value);
+        // Only append if value exists and is not undefined/null/empty string
+        if (inValue[1] && inValue[1].value !== undefined && inValue[1].value !== null && inValue[1].value !== "") {
+          // Handle file uploads differently
+          if (inValue[1].type === 'fileupload' && inValue[1].value instanceof File) {
+            formData.append(inValue[0], inValue[1].value, inValue[1].value.name);
+          } else {
+            formData.append(inValue[0], inValue[1].value);
+          }
+        }
       });
+      
+      const postUrl = `${process.env.NEXT_PUBLIC_API_URL.slice(0, -1)}${data.link.href}`;
 
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL.slice(0, -1)}${data.link.href}`,
+          postUrl,
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
+            },
+            // Add timeout and better error handling
+            timeout: 30000,
+            validateStatus: function (status) {
+              return status < 500; // Resolve only if status is less than 500
             },
           }
         );
@@ -523,19 +551,21 @@ const Form = ({ id, data }) => {
           }
         });
 
-        if (serverErrors && serverErrors.length) {
-          setValues({
-            ...values,
-            [`tx_form_formframework[${Object.entries(serverErrors[formId])[0][0]
-              }]`]: {
-              ...values[
-              `tx_form_formframework[${Object.entries(serverErrors[formId])[0][0]
-              }]`
-              ],
-              error: Object.entries(serverErrors[formId])[0][1],
-            },
-          });
-          return;
+        if (serverErrors && serverErrors.length && serverErrors[formId] && typeof serverErrors[formId] === 'object') {
+          const errorEntries = Object.entries(serverErrors[formId]);
+          if (errorEntries.length > 0) {
+            setValues({
+              ...values,
+              [`tx_form_formframework[${errorEntries[0][0]}]`]: {
+                ...values[
+                `tx_form_formframework[${errorEntries[0][0]}]`
+                ],
+                error: errorEntries[0][1],
+              },
+            });
+            setIsSubmitting(false);
+            return;
+          }
         }
 
         let tempValues = { ...values };
@@ -549,24 +579,31 @@ const Form = ({ id, data }) => {
           };
         });
         setValues({ ...tempValues });
+        
+        // Simple redirect to the thank you page
         if (redirectLink) {
-          if (redirectLink === "/") {
-            router.push("/", `${redirectLink}`);
-          } else {
-            router.push("/[...slug]", `${redirectLink}`);
-          }
+          window.location.href = redirectLink;
         } else {
-          handleSuccessModal({
-            notConfigModal: true,
-            isVisible: true,
-            data: {
-              confirmationMessage,
-              redirectLink,
-            },
-          });
+          setIsSubmitting(false);
         }
       } catch (e) {
-        console.log(e, "e");
+        if (e.response) {
+          // Check if response is HTML (error page)
+          if (typeof e.response.data === 'string' && e.response.data.includes('<html')) {
+            console.error("Server returned HTML error page instead of JSON response");
+            alert("Server error occurred. Please try again later or contact support.");
+            setIsSubmitting(false);
+            return;
+          }
+        } else if (e.request) {
+          console.log("Error request:", e.request);
+        } else {
+          console.log("Error message:", e.message);
+        }
+        
+        // Show user-friendly error message
+        alert("Form submission failed. Please check your input and try again.");
+        setIsSubmitting(false);
       }
     }
   };
@@ -583,11 +620,23 @@ const Form = ({ id, data }) => {
             fileuploadTwo={fileuploadTwo}
           />
           <Col xs="3">
-            <button className="btn btn-red" data-aos="fade-up" type="submit">
-              {data.form_additional &&
+            <button 
+              className="btn btn-red" 
+              data-aos="fade-up" 
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Spinner animation="border" size="sm" className="me-2" />
+                  {t("data.sending")}
+                </>
+              ) : (
+                data.form_additional &&
                 data.form_additional.renderingOptions.submitButtonLabel
-                ? data.form_additional.renderingOptions.submitButtonLabel
-                : t("data.stepThree.absenden")}
+                  ? data.form_additional.renderingOptions.submitButtonLabel
+                  : t("data.stepThree.absenden")
+              )}
             </button>
           </Col>
         </Row>
