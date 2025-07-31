@@ -54,7 +54,7 @@ const CTAWithCircle = ({ id, contactVariant, data }) => {
             <div className="icon-in desktop-visible" data-aos="fade-right">
               {data.image && data.image.length ? (
                 <LazyLoadImage
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl}`}
+                  src={data.image[0]?.publicUrl}
                   afterLoad={AOSRefresh}
                   alt={t("data.icon")}
                 />
@@ -70,7 +70,7 @@ const CTAWithCircle = ({ id, contactVariant, data }) => {
                 <span data-aos="fade-right" className="icon-in">
                   {data.image && data.image.length ? (
                     <LazyLoadImage
-                      src={`${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl}`}
+                      src={data.image[0]?.publicUrl}
                       afterLoad={AOSRefresh}
                       alt={t("data.office")}
                     />

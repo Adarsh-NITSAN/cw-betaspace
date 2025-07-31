@@ -1,5 +1,13 @@
 import Routes from "../utils/Routes";
 
+// In your sitemap.xml API route, add timeout optimization
+export const config = {
+  maxDuration: 60, // Set appropriate timeout for sitemap generation
+}
+
+// Add pagination or limit entries
+const maxSitemapEntries = 1000; // Limit entries per sitemap
+
 function Sitemap(pageRoutes) {
   return `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -36,8 +44,12 @@ export async function getServerSideProps({ res }) {
     })
   );
 
+  // Limit the number of entries to prevent timeout
+  pageRoutes = pageRoutes.slice(0, maxSitemapEntries);
+
   const sitemap = await Sitemap(pageRoutes);
   res.setHeader("Content-Type", "text/xml");
+  res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600"); // Cache for 1 hour
   res.write(sitemap);
   res.end();
 

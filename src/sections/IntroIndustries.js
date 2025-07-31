@@ -25,19 +25,10 @@ const IntroIndustries = ({ id, data }) => {
                 {data.headline && <h1 data-aos="fade">{data.headline}</h1>}
                 {data.check && parseInt(data.check) ? (
                   <span className="icon-in" data-aos="fade-right">
-                    {/* {
-                      data.image && data.image.length ? (
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl}`}
-                          alt="Bike"
-                        />
-                      ) : (
-                        ""
-                      )
-                    } */}
+
                     {data.media && data.media.length ? (
                       <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL}${data.media[0]?.properties?.originalUrl}`}
+                        src={data.media[0]?.publicUrl}
                         alt="Bike"
                       />
                     ) : (
@@ -60,20 +51,13 @@ const IntroIndustries = ({ id, data }) => {
               <div className="rounded-image-wrapper">
                 {data.image && data.image.length ? (
                   <RoundedImage
-                    image={`${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl}`}
+                    image={data.image[0]?.publicUrl}
                     alt="Rider"
                   />
                 ) : (
                   ""
                 )}
-                {/* {data.media && data.media.length ? (
-                  <RoundedImage
-                    image={`${process.env.NEXT_PUBLIC_API_URL}${data.media[0]?.properties?.originalUrl}`}
-                    alt="Rider"
-                  />
-                ) : (
-                  ""
-                )} */}
+
               </div>
             </Col>
           </Row>

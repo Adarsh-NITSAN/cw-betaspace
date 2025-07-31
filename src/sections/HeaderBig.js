@@ -37,7 +37,7 @@ const HeaderBig = ({ data }) => {
         >
           {i && (
             <img
-              src={`${process.env.NEXT_PUBLIC_API_URL}${i?.properties?.originalUrl}`}
+              src={i?.publicUrl}
               alt="Solution"
             />
           )}
@@ -72,7 +72,7 @@ const HeaderBig = ({ data }) => {
             <span
               className={`spining-circle`}
               style={{
-                backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl})`,
+                backgroundImage: `url(${data.image[0]?.publicUrl})`,
               }}
             ></span>
           ) : (

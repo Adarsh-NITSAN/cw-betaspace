@@ -31,7 +31,7 @@ const MoreLink = ({ children, link, targetBlank, diffDomain }) => {
   
   if (!linkUrl) {
     return (
-      <span className="more-link">
+      <span className="more-link d-none">
         {children}
         <span className="icon-in">
           <img src="/images/png/arrow-red-right-over.svg" alt="Arrow Red" />

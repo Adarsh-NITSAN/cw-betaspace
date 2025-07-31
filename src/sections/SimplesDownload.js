@@ -29,7 +29,7 @@ const SimpleDownload = ({ id, data, inAccordion }) => {
               <div className="download-img-in">
                 {list.image && list.image.length ? (
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${list.image[0]?.properties?.originalUrl}`}
+                    src={list.image[0]?.publicUrl}
                     alt="Table"
                   />
                 ) : (
@@ -58,7 +58,7 @@ const SimpleDownload = ({ id, data, inAccordion }) => {
                     setLoadingStates(prev => ({ ...prev, [downloadKey]: true }));
                     axios
                       .get(
-                        `${process.env.NEXT_PUBLIC_API_URL}${list.file2[0]?.properties?.originalUrl}`,
+                        list.file2[0]?.publicUrl,
                         {
                           responseType: "blob",
                         }
@@ -66,10 +66,10 @@ const SimpleDownload = ({ id, data, inAccordion }) => {
                       .then((res) => {
                         fileDownload(
                           res.data,
-                          list.file2[0]?.properties?.originalUrl.replace(
+                          list.file2[0]?.properties?.name || list.file2[0]?.properties?.originalUrl?.replace(
                             "/Download/",
                             ""
-                          )
+                          ) || "download"
                         );
                         setLoadingStates(prev => ({ ...prev, [downloadKey]: false }));
                       })

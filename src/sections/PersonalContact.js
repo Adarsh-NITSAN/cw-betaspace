@@ -42,7 +42,7 @@ const PersonalContact = ({ id, data }) => {
               <div className="profile-img">
                 {data.image && data.image.length ? (
                   <RoundedImage
-                    image={`${process.env.NEXT_PUBLIC_API_URL}${data.image[0]?.properties?.originalUrl}`}
+                    image={data.image[0]?.publicUrl}
                     imageAlt="Profile"
                     aosAnimation={true}
                     nameClass="br-blue"

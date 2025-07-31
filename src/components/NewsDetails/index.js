@@ -10,10 +10,12 @@ import MoreLink from "../Shared/MoreLink";
 import rehypeRaw from "rehype-raw";
 // import { useTranslation } from "../../pages/i18n/client";
 import { useTranslation } from "../i18n/client";
+import { useState } from "react";
 
 const NewsDetails = ({ data }) => {
   const router = useRouter();
   const {t} = useTranslation(router.locale);
+  const [isDownloading, setIsDownloading] = useState(false);
   var settings = {
     dots: true,
     controls: false,
@@ -110,27 +112,41 @@ const NewsDetails = ({ data }) => {
 
             {data.falRelatedFiles &&
               data.falRelatedFiles.length &&
-              data.falRelatedFiles[0].properties ? (
+              data.falRelatedFiles[0].images?.defaultImage?.publicUrl ? (
               <Col sm={12} md={6}>
                 <div className="download-wrapper">
                   <h3 data-aos="fade-up">Downloads</h3>
                   <button
                     data-aos="fade-up"
                     onClick={() => {
+                      setIsDownloading(true);
                       axios
-                        .get(data.falRelatedFiles[0].properties.publicUrl, {
+                        .get(data.falRelatedFiles[0].images.defaultImage.publicUrl, {
                           responseType: "blob",
                         })
                         .then((res) => {
                           fileDownload(
                             res.data,
-                            data.falRelatedFiles[0].properties.name
+                            data.falRelatedFiles[0].properties.name,
                           );
+                          setIsDownloading(false);
+                        })
+                        .catch((error) => {
+                          console.error('Download error:', error);
+                          setIsDownloading(false);
                         });
                     }}
                     className="btn btn-download"
+                    disabled={isDownloading}
                   >
-                    {t('data.downloadText')}
+                    {isDownloading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        {t('data.downloading')}
+                      </>
+                    ) : (
+                      t('data.downloadText')
+                    )}
                   </button>
                 </div>
               </Col>
