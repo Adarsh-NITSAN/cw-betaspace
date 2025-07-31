@@ -66,7 +66,7 @@ const Custom404 = ({ pageData, pageMenuItems }) => {
         <link
           rel="icon"
           type="image/png"
-          href="/images/favicon_package/favicon-16x16.png"
+          href="/images/favicon_package/favicon.ico"
         />
         {/* <script
           async

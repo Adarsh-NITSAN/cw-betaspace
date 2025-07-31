@@ -6,34 +6,28 @@ import NextArrow from "../components/SliderArrows/NextArrow";
 import PrevArrow from "../components/SliderArrows/PrevArrow";
 import Link from "next/link";
 
-// Helper function to extract link URL from btnlink object
-const getLinkUrl = (btnlink) => {
-  if (!btnlink) return null;
-  // Handle both old and new database structures
-  if (typeof btnlink === 'string') return btnlink;
-  if (btnlink.href) return btnlink.href;
-  if (btnlink.linkText) return btnlink.linkText;
-  return null;
-};
-
 const renderSlides = (products) => {
   return products.map((product, id) => {
-    const linkUrl = getLinkUrl(product.btnlink);
     return (
-      <div key={product + id} className="product-slide">
-        <div className="product-slide-inner">
-          {product.image && product.image.length ? (
-            <>
-              <div className="product-slide-img">
+      <div className="product-type-slide" key={product + id}>
+        {product.image && product.image.length ? (
+          <>
+            <div className="product-slide-inner">
+              <div className="bg-overlay">
                 <LazyLoadImage
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${product.image[0]?.properties?.originalUrl}`}
+                  src={`${product.image[0]?.publicUrl ? product.image[0]?.publicUrl : `${process.env.NEXT_PUBLIC_API_URL}${product.image[0]?.properties?.originalUrl}`}`}
                   afterLoad={AOSRefresh}
                   alt="Product"
                 />
               </div>
-              {product.btnlink && linkUrl && (
+              {product.btnlink && (
                 <Link
-                  href={linkUrl}
+                  href={`${
+                    new DOMParser().parseFromString(
+                      product.btnlink.href,
+                      "text/html"
+                    ).documentElement.textContent
+                  }`}
                   className="product-slide-overlay d-xl-flex align-items-center justify-content-center"
                 >
                   {product.headline && (
@@ -47,16 +41,16 @@ const renderSlides = (products) => {
                   </span>
                 </Link>
               )}
-            </>
-          ) : (
-            ""
-          )}
-          {product.headline && (
-            <h6 className="d-none d-xl-block text-center">
-              {product.headline}
-            </h6>
-          )}
-        </div>
+            </div>
+            {product.headline && (
+              <h6 className="d-none d-xl-block text-center">
+                {product.headline}
+              </h6>
+            )}
+          </>
+        ) : (
+          ""
+        )}
       </div>
     );
   });
@@ -68,14 +62,14 @@ const ProductTypes = ({ id, data }) => {
     controls: false,
     infinite: data.list.length >= 6 ? true : false,
     slidesToShow: 6,
-    slidesToScroll: 3,
+    slidesToScroll: 2,
     autoplay: true,
     autoplaySpeed: 6000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1800,
+        breakpoint: 1600,
         settings: {
           slidesToShow: 5,
           slidesToScroll: 3,
@@ -89,7 +83,7 @@ const ProductTypes = ({ id, data }) => {
         },
       },
       {
-        breakpoint: 1025,
+        breakpoint: 1200,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
@@ -98,12 +92,19 @@ const ProductTypes = ({ id, data }) => {
       {
         breakpoint: 992,
         settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 480,
+        breakpoint: 576,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -111,8 +112,6 @@ const ProductTypes = ({ id, data }) => {
       },
     ],
   };
-
-  const linkUrl = getLinkUrl(data.btnlink);
 
   return (
     <section id={`c${id}`} className="product-types-section">
@@ -126,9 +125,16 @@ const ProductTypes = ({ id, data }) => {
               ""
             )}
           </div>
-          {data.btnlink && data.btntext && linkUrl && (
+          {data.btnlink && data.btntext && (
             <div className="text-link" data-aos="fade-up">
-              <Link href={linkUrl}>
+              <Link
+                href={`${
+                  new DOMParser().parseFromString(
+                    data.btnlink.href,
+                    "text/html"
+                  ).documentElement.textContent
+                }`}
+              >
                 {data.btntext}
               </Link>
             </div>

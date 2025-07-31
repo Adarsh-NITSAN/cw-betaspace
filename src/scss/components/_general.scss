@@ -25,6 +25,13 @@ body {
   @include bg-img;
 }
 
+a:focus-visible
+a:focus-within,
+a:focus {
+  outline: 1px solid $brand-color !important;
+  outline-offset: 1px !important;
+}
+
 main {
   min-height: calc(100vh - 110px);
   @include media-breakpoint-up(lg) {

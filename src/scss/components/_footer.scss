@@ -3,11 +3,11 @@
 *******************************************************************************/
 
 .footer-container {
+  margin: 0 auto;
+  max-width: 1192px;
+  padding: 75px 15px 82px 15px;
   position: relative;
   z-index: 1;
-  max-width: 1192px;
-  margin: 0 auto;
-  padding: 75px 15px 82px 15px;
 }
 
 li {
@@ -19,24 +19,24 @@ li {
 }
 
 .footer-aurora-outer {
-  display: block;
-  width: 100%;
-  position: relative;
   background-color: $brand-color;
   background-size: 100%;
+  display: block;
   overflow: hidden;
+  position: relative;
+  width: 100%;
   &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
     background-image: url("/images/png/bogen-dark-top-center-1920-desktop.svg");
-    padding-bottom: 6.4%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: 102%;
+    content: "";
+    left: 0;
+    padding-bottom: 6.4%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
   }
 }
 @include media-breakpoint-down(sm) {
@@ -48,11 +48,11 @@ li {
   }
 }
 .social-links-list {
-  display: flex;
   align-items: center;
+  display: flex;
   flex-wrap: wrap;
-  padding-bottom: 55px;
   margin: 0;
+  padding-bottom: 55px;
   @include media-breakpoint-up(md) {
     justify-content: center;
   }
@@ -62,11 +62,11 @@ li {
     }
   }
   a {
-    width: 26px;
-    height: 25px;
-    display: inline-flex;
     align-items: center;
+    display: inline-flex;
+    height: 25px;
     justify-content: center;
+    width: 26px;
 
     &:hover {
       img {
@@ -77,8 +77,8 @@ li {
       }
     }
     img {
-      object-fit: cover;
       max-height: 100%;
+      object-fit: cover;
       &.social-image-hover {
         display: none;
       }
@@ -88,31 +88,35 @@ li {
 
 .main-links {
   margin-bottom: 22px;
+
   li:not(:last-child) {
     margin-right: 32px;
   }
+
   a {
+    color: $white;
+    cursor: pointer;
     font-size: 16px;
+    font-weight: 600;
     letter-spacing: 1px;
     line-height: 28px;
-    color: #ffffff;
-    font-weight: 600;
     text-transform: none;
-    cursor: pointer;
+
     &:hover {
-      color: #ffffff;
+      color: $brand-color-gray;
     }
   }
 }
 
 .sub-links-wrapper {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
 }
 
 .sub-links {
   margin-bottom: 0;
+
   li {
     &:first-child {
       margin-left: 0;
@@ -123,16 +127,18 @@ li {
     }
     margin-left: 20px;
   }
+
   .head-link a {
     font-size: 16px;
     line-height: 28px;
   }
+
   a {
+    color: $brand-color-gray;
     font-size: 12px;
+    font-weight: 700;
     letter-spacing: 1px;
     line-height: 25px;
-    color: $brand-color-gray;
-    font-weight: 700;
     text-transform: none;
   }
 }
@@ -140,75 +146,98 @@ li {
 .logo-inner {
   display: flex;
   margin-bottom: 0;
+  
   li {
-    display: inline-flex;
     align-items: center;
+    display: inline-flex;
+
     &:not(:first-child) {
       margin-left: 28px;
     }
   }
+
   .dropdown-menu {
-    min-width: 6rem;
     border: 0;
+    min-width: 6rem;
+
     a.dropdown-item {
       padding: 0.25rem 1.5rem !important;
     }
+
     .dropdown-item {
       cursor: pointer;
       span {
+        color: $brand-color-gray !important;
         font-size: 12px;
+        font-weight: 700;
         letter-spacing: 2px;
         line-height: 25px;
-        color: $brand-color-gray !important;
         text-transform: uppercase;
-        font-weight: 700;
       }
+
       &:active,
       &:focus {
-        color: #ffffff;
         background-color: $brand-color;
+        color: $white;
+
         span {
-          color: #ffffff;
+          color: $white;
         }
       }
     }
   }
+
   a,
   .btn,
   .copyright-text {
-    display: inline-flex;
     align-items: center;
-    font-size: 12px;
-    letter-spacing: 2px;
-    line-height: 25px;
-    color: $brand-color-gray !important;
-    text-transform: uppercase;
-    font-weight: 700;
     background-color: transparent !important;
-    padding: 0 !important;
     border: 0 !important;
     box-shadow: none !important;
+    color: $brand-color-gray !important;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
     height: auto;
+    letter-spacing: 2px;
+    line-height: 25px;
     min-width: 1px;
+    padding: 0 !important;
+    text-transform: uppercase;
+
     &:after {
       content: none !important;
     }
   }
+
   .icon-in {
     display: inline-flex;
-    width: 18px;
     height: 18px;
     margin-right: 5px;
+    width: 18px;
+
     img {
-      vertical-align: middle;
       display: inline !important;
+      vertical-align: middle;
+      transition: all 0.25s ease 0s;
+    }
+  }
+
+  .btn:focus,
+  .btn:focus-visible,
+  .btn:active,
+  .btn:hover {
+    color: $white !important;
+
+    .icon-in img {
+      filter: brightness(3);
     }
   }
 }
 
 .sub-links a:hover,
 .logo-inner a:hover {
-  color: $brand-color-gray;
+  color: $white;
 }
 
 @media screen and (min-width: 1364px) {
@@ -223,22 +252,22 @@ li {
   }
   .sub-links,
   .main-links {
-    max-width: 190px;
     margin: 0 auto 15px;
+    max-width: 190px;
   }
   .main-links li,
   .sub-links li {
     display: block;
-    text-align: left;
-    margin-right: 0 !important;
     margin-left: 25px !important;
+    margin-right: 0 !important;
+    text-align: left;
   }
   .main-links a,
   .sub-links .head-link a {
     font-size: 12px;
+    font-weight: 700;
     letter-spacing: 2px;
     line-height: 25px;
-    font-weight: 700;
   }
   .sub-links {
     margin-bottom: 45px;
@@ -267,8 +296,8 @@ li {
   }
   .logo-inner {
     display: flex;
-    justify-content: space-between;
     flex-direction: row-reverse;
+    justify-content: space-between;
     li:not(:first-child) {
       margin-left: 0;
     }

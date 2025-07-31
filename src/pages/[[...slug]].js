@@ -238,7 +238,7 @@ const Page = ({
           <link
             rel="icon"
             type="image/png"
-            href="/images/favicon_package/favicon-16x16.png"
+            href="/images/favicon_package/favicon.ico"
           />
           {ogDescription && (
             <meta property="og:description" content={ogDescription}></meta>
