@@ -70,7 +70,7 @@ const Button = ({
         <>
           {diffDomain ? (
             <a
-              href={`${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`}
+              href={linkUrl.startsWith('http://') || linkUrl.startsWith('https://') ? linkUrl : `${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`}
               className={`btn btn-red ${className} ${btnWithArrow ? "btn-w-arrow" : ""
                 } ${whiteHover ? "br-hover-white" : ""}`}
               target="_blank"

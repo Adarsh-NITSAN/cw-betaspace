@@ -31,12 +31,12 @@ const MoreLink = ({ children, link, targetBlank, diffDomain }) => {
   
   if (!linkUrl) {
     return (
-      <span className="more-link d-none">
+      <span className="more-link">
         {children}
         <span className="icon-in">
           <img src="/images/png/arrow-red-right-over.svg" alt="Arrow Red" />
           <img
-            className="img-hover"
+            className="img-hover d-none"
             src="/images/png/arrow-blue-right-over.svg"
             alt="Arrow Blue"
           />
@@ -49,7 +49,7 @@ const MoreLink = ({ children, link, targetBlank, diffDomain }) => {
     <>
       {diffDomain ? (
         <a
-          href={`${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`}
+          href={linkUrl.startsWith('http://') || linkUrl.startsWith('https://') ? linkUrl : `${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`}
           className="more-link"
           target="_blank"
         >

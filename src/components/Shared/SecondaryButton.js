@@ -40,7 +40,7 @@ const SecondaryButton = ({ diffDomain, targetBlank, children, link, className, .
   return (
     <>
       {diffDomain ? (
-        <a href={`${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`} className={`btn test btn-red btn-br-red ${className}`} target="_blank" {...props}>
+        <a href={linkUrl.startsWith('http://') || linkUrl.startsWith('https://') ? linkUrl : `${process.env.NEXT_PUBLIC_API_URL1}${linkUrl}`} className={`btn test btn-red btn-br-red ${className}`} target="_blank" {...props}>
           {children}
         </a>
       ) : (
