@@ -146,173 +146,200 @@ const getNewsList = (newsData) => {
 };
 
 export const Routes = async () => {
-  const menuData = await getAPIData("");
-  const enMenuData = await getAPIData("en");
-  const usMenuData = await getAPIData("us");
-  const itMenuData = await getAPIData("it");
-  const frMenuData = await getAPIData("fr");
-  const plMenuData = await getAPIData("pl");
-  const newsData = await getAPIData("news");
-  const enNewsData = await getAPIData("en/news");
-  const usNewsData = await getAPIData("us/news");
-  const itNewsData = await getAPIData("it/news");
-  const frNewsData = await getAPIData("fr/news");
-  const plNewsData = await getAPIData("pl/news");
-  let allNews = [];
+  try {
+    // Add timeout promise to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Routes generation timeout')), 30000);
+    });
 
-  let pages = [
-    {
-      params: { slug: [""] },
-      locale: "de",
-    },
-    {
-      params: { slug: [""] },
-      locale: "en",
-    },
-    {
-      params: { slug: [""] },
-      locale: "us",
-    },
-    {
-      params: { slug: [""] },
-      locale: "it",
-    },
-    {
-      params: { slug: [""] },
-      locale: "fr",
-    },
-    {
-      params: { slug: [""] },
-      locale: "pl",
-    },
-    {
-      params: { slug: ["search"] },
-      locale: "de",
-    },
-    { params: { slug: ["search"] }, locale: "en" },
-    { params: { slug: ["search"] }, locale: "us" },
-    { params: { slug: ["search"] }, locale: "it" },
-    { params: { slug: ["search"] }, locale: "fr" },
-    { params: { slug: ["search"] }, locale: "pl" },
-  ];
+    const routesPromise = (async () => {
+      const menuData = await getAPIData("");
+      const enMenuData = await getAPIData("en");
+      const usMenuData = await getAPIData("us");
+      const itMenuData = await getAPIData("it");
+      const frMenuData = await getAPIData("fr");
+      const plMenuData = await getAPIData("pl");
+      const newsData = await getAPIData("news");
+      const enNewsData = await getAPIData("en/news");
+      const usNewsData = await getAPIData("us/news");
+      const itNewsData = await getAPIData("it/news");
+      const frNewsData = await getAPIData("fr/news");
+      const plNewsData = await getAPIData("pl/news");
+      let allNews = [];
 
-  let getDERoutes = [];
-  let getENRoutes = [];
-  let getUSRoutes = [];
-  let getITRoutes = [];
-  let getFRRoutes = [];
-  let getPLRoutes = [];
-
-  if (menuData && menuData.data) {
-    getDERoutes = getRoutes(menuData, "de");
-  }
-  if (enMenuData && enMenuData.data) {
-    getENRoutes = getRoutes(enMenuData, "en");
-  }
-  if (usMenuData && usMenuData.data) {
-    getUSRoutes = getRoutes(usMenuData, "us");
-  }
-  if (itMenuData && itMenuData.data) {
-    getITRoutes = getRoutes(itMenuData, "it");
-  }
-  if (frMenuData && frMenuData.data) {
-    getFRRoutes = getRoutes(frMenuData, "fr");
-  }
-  if (plMenuData && plMenuData.data) {
-    getPLRoutes = getRoutes(plMenuData, "pl");
-  }
-
-  pages = [
-    ...pages,
-    ...getDERoutes,
-    ...getENRoutes,
-    ...getUSRoutes,
-    ...getITRoutes,
-    ...getFRRoutes,
-    ...getPLRoutes,
-  ];
-
-  if (newsData && newsData.data && newsData.data.content && newsData.data.content.colPos0) {
-    const newsList = getNewsList(newsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+      let pages = [
+        {
+          params: { slug: [""] },
+          locale: "de",
         },
-        locale: "de",
-      }));
-      allNews = [...allNews, ...news];
-    }
-  }
-
-  if (enNewsData && enNewsData.data && enNewsData.data.content && enNewsData.data.content.colPos0) {
-    const newsList = getNewsList(enNewsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+        {
+          params: { slug: [""] },
+          locale: "en",
         },
-        locale: "en",
-      }));
-      allNews = [...allNews, ...news];
-    }
-  }
-
-  if (usNewsData && usNewsData.data && usNewsData.data.content && usNewsData.data.content.colPos0) {
-    const newsList = getNewsList(usNewsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+        {
+          params: { slug: [""] },
+          locale: "us",
         },
-        locale: "us",
-      }));
-      allNews = [...allNews, ...news];
-    }
-  }
-
-  if (itNewsData && itNewsData.data && itNewsData.data.content && itNewsData.data.content.colPos0) {
-    const newsList = getNewsList(itNewsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+        {
+          params: { slug: [""] },
+          locale: "it",
         },
-        locale: "it",
-      }));
-      allNews = [...allNews, ...news];
-    }
-  }
-
-  if (frNewsData && frNewsData.data && frNewsData.data.content && frNewsData.data.content.colPos0) {
-    const newsList = getNewsList(frNewsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+        {
+          params: { slug: [""] },
+          locale: "fr",
         },
-        locale: "fr",
-      }));
-      allNews = [...allNews, ...news];
-    }
-  }
-
-  if (plNewsData && plNewsData.data && plNewsData.data.content && plNewsData.data.content.colPos0) {
-    const newsList = getNewsList(plNewsData.data.content.colPos0);
-    if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
-      var news = newsList.content.data.list.map((article) => ({
-        params: {
-          slug: ["news", article.pathSegment],
+        {
+          params: { slug: [""] },
+          locale: "pl",
         },
-        locale: "pl",
-      }));
-      allNews = [...allNews, ...news];
-    }
+        {
+          params: { slug: ["search"] },
+          locale: "de",
+        },
+        { params: { slug: ["search"] }, locale: "en" },
+        { params: { slug: ["search"] }, locale: "us" },
+        { params: { slug: ["search"] }, locale: "it" },
+        { params: { slug: ["search"] }, locale: "fr" },
+        { params: { slug: ["search"] }, locale: "pl" },
+      ];
+
+      let getDERoutes = [];
+      let getENRoutes = [];
+      let getUSRoutes = [];
+      let getITRoutes = [];
+      let getFRRoutes = [];
+      let getPLRoutes = [];
+
+      if (menuData && menuData.data) {
+        getDERoutes = getRoutes(menuData, "de");
+      }
+      if (enMenuData && enMenuData.data) {
+        getENRoutes = getRoutes(enMenuData, "en");
+      }
+      if (usMenuData && usMenuData.data) {
+        getUSRoutes = getRoutes(usMenuData, "us");
+      }
+      if (itMenuData && itMenuData.data) {
+        getITRoutes = getRoutes(itMenuData, "it");
+      }
+      if (frMenuData && frMenuData.data) {
+        getFRRoutes = getRoutes(frMenuData, "fr");
+      }
+      if (plMenuData && plMenuData.data) {
+        getPLRoutes = getRoutes(plMenuData, "pl");
+      }
+
+      pages = [
+        ...pages,
+        ...getDERoutes,
+        ...getENRoutes,
+        ...getUSRoutes,
+        ...getITRoutes,
+        ...getFRRoutes,
+        ...getPLRoutes,
+      ];
+
+      if (newsData && newsData.data && newsData.data.content && newsData.data.content.colPos0) {
+        const newsList = getNewsList(newsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "de",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      if (enNewsData && enNewsData.data && enNewsData.data.content && enNewsData.data.content.colPos0) {
+        const newsList = getNewsList(enNewsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "en",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      if (usNewsData && usNewsData.data && usNewsData.data.content && usNewsData.data.content.colPos0) {
+        const newsList = getNewsList(usNewsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "us",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      if (itNewsData && itNewsData.data && itNewsData.data.content && itNewsData.data.content.colPos0) {
+        const newsList = getNewsList(itNewsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "it",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      if (frNewsData && frNewsData.data && frNewsData.data.content && frNewsData.data.content.colPos0) {
+        const newsList = getNewsList(frNewsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "fr",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      if (plNewsData && plNewsData.data && plNewsData.data.content && plNewsData.data.content.colPos0) {
+        const newsList = getNewsList(plNewsData.data.content.colPos0);
+        if (newsList && newsList.content && newsList.content.data && newsList.content.data.list) {
+          var news = newsList.content.data.list.map((article) => ({
+            params: {
+              slug: ["news", article.pathSegment],
+            },
+            locale: "pl",
+          }));
+          allNews = [...allNews, ...news];
+        }
+      }
+
+      return [...pages, ...allNews];
+    })();
+
+    // Race between timeout and routes generation
+    return await Promise.race([routesPromise, timeoutPromise]);
+  } catch (error) {
+    console.error('Error generating routes:', error);
+    // Return minimal routes to prevent build failure
+    return [
+      { params: { slug: [""] }, locale: "de" },
+      { params: { slug: [""] }, locale: "en" },
+      { params: { slug: [""] }, locale: "us" },
+      { params: { slug: [""] }, locale: "it" },
+      { params: { slug: [""] }, locale: "fr" },
+      { params: { slug: [""] }, locale: "pl" },
+      { params: { slug: ["search"] }, locale: "de" },
+      { params: { slug: ["search"] }, locale: "en" },
+      { params: { slug: ["search"] }, locale: "us" },
+      { params: { slug: ["search"] }, locale: "it" },
+      { params: { slug: ["search"] }, locale: "fr" },
+      { params: { slug: ["search"] }, locale: "pl" },
+    ];
   }
-
-  var paths = allNews ? pages.concat(allNews) : pages;
-
-  return paths;
 };
 
 export default Routes;

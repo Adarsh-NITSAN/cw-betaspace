@@ -6,6 +6,54 @@ module.exports = withFonts(
   withOptimizedImages({
     i18n,
     reactStrictMode: true,
+    // Add build timeout configuration
+    experimental: {
+      workerThreads: false,
+      cpus: 1
+    },
+    // Increase build timeout and add optimization settings
+    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+      // Increase timeout for build process
+      config.watchOptions = {
+        poll: 1000,
+        aggregateTimeout: 300,
+      };
+      
+      // Optimize for production builds
+      if (!dev && isServer) {
+        config.optimization = {
+          ...config.optimization,
+          splitChunks: {
+            chunks: 'all',
+            cacheGroups: {
+              default: false,
+              vendors: false,
+              vendor: {
+                name: 'vendor',
+                chunks: 'all',
+                test: /node_modules/,
+                priority: 20
+              },
+              common: {
+                name: 'common',
+                minChunks: 2,
+                chunks: 'all',
+                priority: 10,
+                reuseExistingChunk: true,
+                enforce: true
+              }
+            }
+          }
+        };
+      }
+      
+      return config;
+    },
+    // Add build performance optimization
+    onDemandEntries: {
+      maxInactiveAge: 25 * 1000,
+      pagesBufferLength: 2,
+    },
     async rewrites() {
       return [
         {

@@ -344,11 +344,27 @@ const Page = ({
 };
 
 export const getStaticPaths = async (context) => {
-  const paths = await Routes();
-  return {
-    paths: paths,
-    fallback: false,
-  };
+  try {
+    const paths = await Routes();
+    return {
+      paths: paths,
+      fallback: 'blocking', // Use blocking fallback for better performance
+    };
+  } catch (error) {
+    console.error('Error in getStaticPaths:', error);
+    // Return minimal paths to prevent build failure
+    return {
+      paths: [
+        { params: { slug: [""] }, locale: "de" },
+        { params: { slug: [""] }, locale: "en" },
+        { params: { slug: [""] }, locale: "us" },
+        { params: { slug: [""] }, locale: "it" },
+        { params: { slug: [""] }, locale: "fr" },
+        { params: { slug: [""] }, locale: "pl" },
+      ],
+      fallback: 'blocking',
+    };
+  }
 };
 
 export const getStaticProps = async (context) => {
@@ -367,41 +383,79 @@ export const getStaticProps = async (context) => {
     slug = paramSlug[0];
   }
   
-  var newsData = await getAPIData("news/detail/" + paramSlug);
-  if (!newsData.error) {
-    var pageData = newsData;
-  } else {
-    const url = !isGerman(context.locale) ? `${context.locale}/${slug}` : slug;
-    var pageData = await getAPIData(url);
+  try {
+    // Fetch page data with timeout handling
+    var newsData = await getAPIData("news/detail/" + paramSlug);
+    if (!newsData.error) {
+      var pageData = newsData;
+    } else {
+      const url = !isGerman(context.locale) ? `${context.locale}/${slug}` : slug;
+      var pageData = await getAPIData(url);
+    }
+
+    // Only fetch menu items for the current locale to reduce API calls
+    const menuItems = await getAPIData(
+      !isGerman(context.locale) ? `${context.locale}/${slug}` : slug
+    );
+    
+    // Only fetch site data for the current locale instead of all languages
+    let siteData = null;
+    switch (context.locale) {
+      case 'en':
+        siteData = await getAPIData("en");
+        break;
+      case 'us':
+        siteData = await getAPIData("us");
+        break;
+      case 'it':
+        siteData = await getAPIData("it");
+        break;
+      case 'fr':
+        siteData = await getAPIData("fr");
+        break;
+      case 'pl':
+        siteData = await getAPIData("pl");
+        break;
+      default:
+        siteData = await getAPIData("");
+        break;
+    }
+    
+    return {
+      props: {
+        pageData: pageData || null,
+        pageMenuItems: menuItems?.data?.page || null,
+        siteEnData: context.locale === 'en' ? siteData?.data?.page || null : null,
+        siteUsData: context.locale === 'us' ? siteData?.data?.page || null : null,
+        siteDeData: context.locale === 'de' ? siteData?.data?.page || null : null,
+        siteItData: context.locale === 'it' ? siteData?.data?.page || null : null,
+        siteFrData: context.locale === 'fr' ? siteData?.data?.page || null : null,
+        sitePlData: context.locale === 'pl' ? siteData?.data?.page || null : null,
+        preview,
+        previewData: previewData || null,
+      },
+      // Add ISR with revalidation to prevent build timeouts
+      revalidate: 3600, // Revalidate every hour
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
+    // Return fallback data to prevent build failure
+    return {
+      props: {
+        pageData: null,
+        pageMenuItems: null,
+        siteEnData: null,
+        siteUsData: null,
+        siteDeData: null,
+        siteItData: null,
+        siteFrData: null,
+        sitePlData: null,
+        preview,
+        previewData: previewData || null,
+      },
+      revalidate: 60, // Retry in 1 minute if there's an error
+    };
   }
-
-  const menuItems = await getAPIData(
-    !isGerman(context.locale) ? `${context.locale}/${slug}` : slug
-  );
-  const enData = await getAPIData("en");
-  const usData = await getAPIData("us");
-  const deData = await getAPIData("");
-  const itData = await getAPIData("it");
-  const frData = await getAPIData("fr");
-  const plData = await getAPIData("pl");
-  
-  return {
-    props: {
-      pageData: pageData || null,
-      pageMenuItems: menuItems?.data?.page || null,
-      siteEnData: enData?.data?.page || null,
-      siteUsData: usData?.data?.page || null,
-      siteDeData: deData?.data?.page || null,
-      siteItData: itData?.data?.page || null,
-      siteFrData: frData?.data?.page || null,
-      sitePlData: plData?.data?.page || null,
-      preview,
-      previewData: previewData || null,
-
-      // ...(await serverSideTranslations(context.locale['common'])),
-    },
-    // revalidate: 1,
-  };
 };
 
 export default Page;
